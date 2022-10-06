@@ -7,14 +7,20 @@ import numpy as np
 if __name__ == "__main__":
     # initialize the camera
     cam = cv2.VideoCapture(0)   # 0 -> index of camera
+
+    model = tf.keras.models.load_model('saved_model/model')
     
     while True:
         s, img = cam.read()
         # cv2.imshow('frame', img)
 
         grayImage = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        
         cv2.imshow('frame', grayImage)
+        resized = cv2.resize(grayImage, (1920,1080), interpolation = cv2.INTER_AREA)
+        # resized = tf.reshape(grayImage, [28*28])
+
+        prediction = model.predict(grayImage)
+        print(prediction)
 
         # for row in range(len(img)):
         #     for col in range(len(img)):
