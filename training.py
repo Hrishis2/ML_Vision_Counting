@@ -87,7 +87,7 @@ ds_test = ds_test.prefetch(tf.data.experimental.AUTOTUNE)
 
 
 model = tf.keras.models.Sequential([
-    # tf.keras.layers.Reshape(target_shape=(384*216,), input_shape=(216,384)),
+    tf.keras.layers.Reshape(target_shape=(256*256,), input_shape=(256,256)),
     tf.keras.layers.Dense(units=256, activation='relu'),
     tf.keras.layers.Dense(units=192, activation='relu'),
     tf.keras.layers.Dense(units=128, activation='relu'),
