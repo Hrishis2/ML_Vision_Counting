@@ -6,6 +6,23 @@ import tensorflow as tf
 
 
 
+
+cap = cv2.VideoCapture(0)
+
+model = tf.keras.models.load_model('saved_model/model')
+
+mpHands = mp.solutions.hands
+hands = mpHands.Hands(static_image_mode=False,
+                      max_num_hands=1,
+                      min_detection_confidence=0.5,
+                      min_tracking_confidence=0.5)
+mpDraw = mp.solutions.drawing_utils
+
+pTime = 0
+cTime = 0
+
+
+
 def bound(coord, dim, w, h):
     if coord < 0:
         coord = 0
@@ -21,19 +38,13 @@ def bound(coord, dim, w, h):
     return coord
 
 
-cap = cv2.VideoCapture(0)
+def predict(model, crop_img):
+    rgb_tensor = tf.convert_to_tensor(crop_img, dtype=tf.float32)
+    # rgb_tensor = tf.expand_dims(rgb_tensor , 0)
+    print(rgb_tensor.shape)
+    prediction = model.predict(crop_img)
+    return prediction
 
-model = tf.keras.models.load_model('saved_model/model')
-
-mpHands = mp.solutions.hands
-hands = mpHands.Hands(static_image_mode=False,
-                      max_num_hands=1,
-                      min_detection_confidence=0.5,
-                      min_tracking_confidence=0.5)
-mpDraw = mp.solutions.drawing_utils
-
-pTime = 0
-cTime = 0
 
 while True:
     success, img = cap.read()
@@ -105,12 +116,12 @@ while True:
     crop_maxx_threshold = bound(crop_minx+crop_size+threshold, 0, w, h)
     crop_img = img[crop_miny_threshold:crop_maxy_threshold, crop_minx_threshold:crop_maxx_threshold]
 
-    cv2.imshow("cropped", crop_img)
+    crop_img = cv2.resize(img, (64, 64), fx=0, fy=0, interpolation=cv2.INTER_AREA)
 
-    rgb_tensor = tf.convert_to_tensor(img, dtype=tf.float32)
-    rgb_tensor = tf.expand_dims(rgb_tensor , 0)
-    print(rgb_tensor.shape)
-    prediction = model.predict(img)
+    imS = cv2.resize(crop_img, (960, 540))
+    cv2.imshow("cropped", imS)
+
+    # prediction = predict(model, crop_img)
     
     
     if cv2.waitKey(1) & 0xFF == ord('q'):
