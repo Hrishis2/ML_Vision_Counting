@@ -1,7 +1,6 @@
-from time import sleep
 import tensorflow as tf
 import cv2
-import numpy as np
+import util
 
 
 if __name__ == "__main__":
@@ -11,20 +10,20 @@ if __name__ == "__main__":
     model = tf.keras.models.load_model('saved_model/model')
     
     while True:
-        s, img = cam.read()
-        # cv2.imshow('frame', img)
+        success, img = cam.read()
+        if not success:
+          raise Exception("CV2 failed to read the video.")
 
-        # grayImage = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        img = util.hand_silhouetting(img)
+
         cv2.imshow('frame', img)
-        # resized = cv2.resize(grayImage, (256,256), interpolation = cv2.INTER_AREA)
-        # resized = tf.reshape(grayImage, [28*28])
 
-        rgb_tensor = tf.convert_to_tensor(img, dtype=tf.float32)
-        rgb_tensor = tf.expand_dims(rgb_tensor , 0)
-        print(rgb_tensor.shape)
+        # rgb_tensor = tf.convert_to_tensor(img, dtype=tf.float32)
+        # rgb_tensor = tf.expand_dims(rgb_tensor , 0)
+        # print(rgb_tensor.shape)
 
-        prediction = model.predict(img)
-        print(prediction)
+        # prediction = model.predict(img)
+        # print(prediction)
 
         # for row in range(len(img)):
         #     for col in range(len(img)):
