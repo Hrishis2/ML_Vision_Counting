@@ -48,11 +48,13 @@ def predict(model, crop_img):
 
 while True:
     success, img = cap.read()
-    imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    # imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+    imgRGB = img
+
     results = hands.process(imgRGB)
     #print(results.multi_hand_landmarks)
 
-    crop_minx, crop_maxx, crop_miny, crop_maxy = 0, 1, 0, 1
+    
 
 
     if results.multi_hand_landmarks:

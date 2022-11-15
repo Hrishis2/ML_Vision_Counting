@@ -55,7 +55,7 @@ def bound_coordinate(coord, dim, w, h):
 
 
 
-def hand_silhouetting(img: list, img_path: str=None) -> list:
+def hand_silhouetting(img: list, args, img_path: str=None) -> list:
 
     if img_path is not None:
         success, img_read = cv2.imread(img_path)
@@ -104,16 +104,13 @@ def hand_silhouetting(img: list, img_path: str=None) -> list:
         maximum_y = int(maximum_y)
 
         # draw rectangle
-        cv2.rectangle(img, (minimum_x, minimum_y), (maximum_x, maximum_y), (255,0,0), 10)
+        if args.show_silhouetting:
+            cv2.rectangle(img, (minimum_x, minimum_y), (maximum_x, maximum_y), (255,0,0), 10)
         crop_minx = minimum_x
         crop_maxx = maximum_x
         crop_miny = minimum_y
         crop_maxy = maximum_y
 
-        
-
-    cv2.imshow("Image", img)
-    
 
     cTime = time.time()
     fps = 1/(cTime-pTime)
@@ -131,10 +128,12 @@ def hand_silhouetting(img: list, img_path: str=None) -> list:
     crop_minx_threshold = bound_coordinate(crop_minx-threshold, 0, w, h)
     crop_maxy_threshold = bound_coordinate(crop_miny+crop_size+threshold, 1, w, h)
     crop_maxx_threshold = bound_coordinate(crop_minx+crop_size+threshold, 0, w, h)
+    print(crop_minx_threshold, crop_maxx_threshold, crop_miny_threshold, crop_maxy_threshold)
     crop_img = img[crop_miny_threshold:crop_maxy_threshold, crop_minx_threshold:crop_maxx_threshold]
 
-    crop_img = cv2.resize(img, (64, 64), fx=0, fy=0, interpolation=cv2.INTER_AREA)
+    # crop_img = cv2.resize(img, (64, 64), fx=0, fy=0, interpolation=cv2.INTER_AREA)
 
-    imS = cv2.resize(crop_img, (960, 540))
+    if args.debug:
+        cv2.imshow("sillhouetted", crop_img)
     
-    return imS
+    return crop_img
