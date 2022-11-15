@@ -12,10 +12,12 @@ def main(directory, new_directory, args):
     if os.path.isdir(new_directory):
         shutil.rmtree(new_directory)
     os.makedirs(new_directory)
+
+    log_string = ""
     
     subdirs = [f.path for f in os.scandir(directory) if f.is_dir()]
-    print(subdirs)
     for dir in subdirs:
+        
         # create same directory in processed fingers directory
         new_dir = new_directory+"/"+dir.split("/")[-1]
         if not os.path.isdir(new_dir):
@@ -23,16 +25,29 @@ def main(directory, new_directory, args):
 
         subdir = dir.split("/")[-1]
         finger_number = subdir[subdir.index("_")+1:]
-        
-        # print(os.listdir(dir))
+
         for idx, file in enumerate(os.listdir(dir)):
-            print(file)
-            filename = os.fsdecode(file)
-            img = cv2.imread(filename)
-            new_img = util.hand_silhouetting(img, args)
+            img = cv2.imread(dir + "/" + file)
+            try: # checks if file is of an image type
+                _ = img.shape
+            except:
+                continue
+            
             new_filename = "fingers_" + finger_number + "_" + str(idx) + ".jpg"
-            print(new_directory + "/fingers_" + finger_number + "/" + new_filename)
+
+            if args.debug:
+                string = "PROCESSING FILE: {} -> {}\n".format(file, new_directory + "/fingers_" + finger_number + "/" + new_filename)
+                log_string += string
+                print(string, end="")
+            
+            new_img = util.hand_silhouetting(img, args)
             cv2.imwrite(new_directory + "/fingers_" + finger_number + "/" + new_filename, new_img)
+
+    
+    if args.debug:
+        print()
+        with open("debug.txt", "w") as f:
+            f.writelines(log_string)
 
 
 if __name__ == "__main__":

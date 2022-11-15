@@ -41,7 +41,6 @@ def bound(coord, dim, w, h):
 def predict(model, crop_img):
     rgb_tensor = tf.convert_to_tensor(crop_img, dtype=tf.float32)
     # rgb_tensor = tf.expand_dims(rgb_tensor , 0)
-    print(rgb_tensor.shape)
     prediction = model.predict(crop_img)
     return prediction
 
@@ -52,7 +51,6 @@ while True:
     imgRGB = img
 
     results = hands.process(imgRGB)
-    #print(results.multi_hand_landmarks)
 
     
 
@@ -60,7 +58,6 @@ while True:
     if results.multi_hand_landmarks:
         # for handLms in results.multi_hand_landmarks:
         #     for id, lm in enumerate(handLms.landmark):
-        #         #print(id,lm)
         #         h, w, c = img.shape
         #         cx, cy = int(lm.x *w), int(lm.y*h)
         #         #if id ==0:

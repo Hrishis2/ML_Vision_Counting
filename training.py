@@ -8,7 +8,7 @@ batch_size = 32
 img_height = 1080
 img_width = 1920
 
-data_dir = os.getcwd() + "/fingers_dataset"
+data_dir = os.getcwd() + "/fingers_processed"
 
 ds_train = tf.keras.utils.image_dataset_from_directory(
   data_dir+"/training_set",
