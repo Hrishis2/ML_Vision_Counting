@@ -43,33 +43,38 @@ def split(folder: str, split=[0.9, 0.1, 0.2]):
         num_validation_images = int(split[2]*num_images)
 
 
-        training_set_folder += "/fingers_"
-        testing_set_folder += "/fingers_"
-        validation_set_folder += "/fingers_"
+        training_set_folder += "/fingers_" + str(finger)
+        testing_set_folder += "/fingers_" + str(finger)
+        validation_set_folder += "/fingers_" + str(finger)
 
-        if os.path.isdir(training_set_folder + str(finger)):
-            shutil.rmtree(training_set_folder + str(finger))
-        if os.path.isdir(testing_set_folder + str(finger)):
-            shutil.rmtree(testing_set_folder + str(finger))
-        if os.path.isdir(validation_set_folder + str(finger)):
-            shutil.rmtree(validation_set_folder + str(finger))
-        os.mkdir(training_set_folder + str(finger))
-        os.mkdir(testing_set_folder + str(finger))
-        os.mkdir(validation_set_folder + str(finger))
+        if os.path.isdir(training_set_folder):
+            shutil.rmtree(training_set_folder)
+        if os.path.isdir(testing_set_folder):
+            shutil.rmtree(testing_set_folder)
+        if os.path.isdir(validation_set_folder):
+            shutil.rmtree(validation_set_folder)
+        os.mkdir(training_set_folder)
+        os.mkdir(testing_set_folder)
+        os.mkdir(validation_set_folder)
 
 
-        # I think this does not equally distribute from each finger folder.
+        # The last thing to do is to ensure that the copying picks up from the last finger number + 1
         for file in range(0, num_training_images):
-            original_filepath = folder + "/fingers_" + str(finger)
-            new_filepath = training_set_folder + str(finger)
-            shutil.copyfile(original_filepath, new_filepath)
+            original_filepath = folder + "/fingers_" + str(finger) + "/fingers_" + str(finger) + "_" + str(file) + ".jpg"
+            new_filepath = training_set_folder + "/fingers_" + str(finger) + "_" + str(file) + ".jpg"
+            shutil.copy(original_filepath, new_filepath)
 
         for file in range(0, num_testing_images):
-            original_filepath = folder + "/fingers_" + str(finger)
-            new_filepath = testing_set_folder + str(finger)
-            shutil.copyfile(original_filepath, new_filepath)
+            original_filepath = folder + "/fingers_" + str(finger) + "/fingers_" + str(finger) + "_" + str(file) + ".jpg"
+            new_filepath = testing_set_folder + "/fingers_" + str(finger) + "_" + str(file) + ".jpg"
+            shutil.copy(original_filepath, new_filepath)
 
         for file in range(0, num_validation_images):
-            original_filepath = folder + "/fingers_" + str(finger)
-            new_filepath = validation_set_folder + str(finger)
-            shutil.copyfile(original_filepath, new_filepath)
+            original_filepath = folder + "/fingers_" + str(finger) + "/fingers_" + str(finger) + "_" + str(file) + ".jpg"
+            new_filepath = validation_set_folder + "/fingers_" + str(finger) + "_" + str(file) + ".jpg"
+            shutil.copy(original_filepath, new_filepath)
+
+        
+        training_set_folder = training_set_folder[0:-10]
+        testing_set_folder = testing_set_folder[0:-10]
+        validation_set_folder = validation_set_folder[0:-10]

@@ -7,6 +7,8 @@ import shutil
 
 
 def main(directory, new_directory, args):
+    log_string = ""
+
     if args.process:
         if not os.path.isdir(directory):
             return Exception("Not a valid directory!")
@@ -17,8 +19,6 @@ def main(directory, new_directory, args):
                 os.makedirs(new_directory)
         else:
             os.makedirs(new_directory)
-
-        log_string = ""
         
         subdirs = [f.path for f in os.scandir(directory) if f.is_dir()]
         for dir in subdirs:
@@ -57,7 +57,6 @@ def main(directory, new_directory, args):
 
     
     if args.debug:
-        print()
         with open("debug.txt", "w") as f:
             f.writelines(log_string)
 
