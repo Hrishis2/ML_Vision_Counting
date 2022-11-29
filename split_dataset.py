@@ -26,6 +26,11 @@ def split(folder: str, split=[0.9, 0.1, 0.2]):
     os.mkdir(training_set_folder)
     os.mkdir(testing_set_folder)
     os.mkdir(validation_set_folder)
+
+
+    training_image_continue = 0
+    testing_image_continue = 0
+    validation_image_continue = 0
     
 
 
@@ -58,20 +63,21 @@ def split(folder: str, split=[0.9, 0.1, 0.2]):
         os.mkdir(validation_set_folder)
 
 
-        # The last thing to do is to ensure that the copying picks up from the last finger number + 1
         for file in range(0, num_training_images):
             original_filepath = folder + "/fingers_" + str(finger) + "/fingers_" + str(finger) + "_" + str(file) + ".jpg"
             new_filepath = training_set_folder + "/fingers_" + str(finger) + "_" + str(file) + ".jpg"
             shutil.copy(original_filepath, new_filepath)
 
-        for file in range(0, num_testing_images):
+        for file in range(num_training_images, num_testing_images+num_training_images):
             original_filepath = folder + "/fingers_" + str(finger) + "/fingers_" + str(finger) + "_" + str(file) + ".jpg"
             new_filepath = testing_set_folder + "/fingers_" + str(finger) + "_" + str(file) + ".jpg"
             shutil.copy(original_filepath, new_filepath)
 
-        for file in range(0, num_validation_images):
+        for file in range(num_training_images+num_testing_images, num_validation_images+num_training_images+num_testing_images):
             original_filepath = folder + "/fingers_" + str(finger) + "/fingers_" + str(finger) + "_" + str(file) + ".jpg"
             new_filepath = validation_set_folder + "/fingers_" + str(finger) + "_" + str(file) + ".jpg"
+            if not os.path.isdir(original_filepath):
+                break
             shutil.copy(original_filepath, new_filepath)
 
         

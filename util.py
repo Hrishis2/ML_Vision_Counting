@@ -77,7 +77,6 @@ def hand_silhouetting(img: list, args, img_path: str=None) -> list:
 
     imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     results = hands.process(imgRGB)
-    #print(results.multi_hand_landmarks)
 
     crop_minx, crop_maxx, crop_miny, crop_maxy = 0, 1, 0, 1
 
@@ -129,8 +128,6 @@ def hand_silhouetting(img: list, args, img_path: str=None) -> list:
     crop_maxy_threshold = bound_coordinate(crop_miny+crop_size+threshold, 1, w, h)
     crop_maxx_threshold = bound_coordinate(crop_minx+crop_size+threshold, 0, w, h)
     crop_img = img[crop_miny_threshold:crop_maxy_threshold, crop_minx_threshold:crop_maxx_threshold]
-
-    # crop_img = cv2.resize(img, (64, 64), fx=0, fy=0, interpolation=cv2.INTER_AREA)
 
     if args.debug:
         cv2.imshow("sillhouetted", crop_img)

@@ -91,7 +91,10 @@ model = tf.keras.models.Sequential([
     tf.keras.layers.Dense(units=256, activation='relu'),
     tf.keras.layers.Dense(units=192, activation='relu'),
     tf.keras.layers.Dense(units=128, activation='relu'),
-    tf.keras.layers.Dense(units=10, activation='softmax')
+    # tf.keras.layers.Dense(units=64, activation='relu'),
+    # tf.keras.layers.Dense(units=32, activation='relu'),
+    # tf.keras.layers.Dense(units=16, activation='relu'),
+    tf.keras.layers.Dense(units=5, activation='softmax')
 ])
 # model = tf.keras.models.Sequential([
 #   tf.keras.layers.Conv2D(32, kernel_size=(3, 3),
