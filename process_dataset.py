@@ -9,7 +9,7 @@ import shutil
 def main(directory, new_directory, args):
     log_string = ""
 
-    if args.process:
+    if not args.just_shuffle and args.process:
         if not os.path.isdir(directory):
             return Exception("Not a valid directory!")
 
@@ -34,6 +34,7 @@ def main(directory, new_directory, args):
             if args.specific != None and int(finger_number) != int(args.specific):
                 continue
 
+            finger_idx = 0
             for idx, file in enumerate(os.listdir(dir)):
                 img = cv2.imread(dir + "/" + file)
                 try: # checks if file is of an image type
@@ -41,7 +42,8 @@ def main(directory, new_directory, args):
                 except:
                     continue
                 
-                new_filename = "fingers_" + finger_number + "_" + str(idx) + ".jpg"
+                new_filename = "fingers_" + finger_number + "_" + str(finger_idx) + ".jpg"
+                finger_idx += 1
 
                 if args.debug:
                     string = "PROCESSING FILE: {} -> {}\n".format(file, new_directory + "/fingers_" + finger_number + "/" + new_filename)
@@ -52,8 +54,8 @@ def main(directory, new_directory, args):
                 cv2.imwrite(new_directory + "/fingers_" + finger_number + "/" + new_filename, new_img)
 
 
-    if args.split:
-        split(new_directory, split=[0.9, 0.1, 0.2])
+    if args.just_shuffle or args.split:
+        split(new_directory, args)
 
     
     if args.debug:
@@ -68,6 +70,8 @@ if __name__ == "__main__":
     argument_parser.add_argument("-f", "--folder", type=str, default="fingers_unprocessed", help="Directory of unprocessed finger images")
     argument_parser.add_argument("--specific", type=int, default=None, help="Enter the finger number if you only want to process one folder")
     argument_parser.add_argument("-p", "--process", default=False, action="store_true", help="Boolean to enable processing dataset")
+    argument_parser.add_argument("--just_shuffle", default=False, action="store_true", help="Boolean to enable just shuffling the dataset. Overrides process and split arguments")
+    argument_parser.add_argument("--shuffle_batches", type=int, default=1, help="How many times you want to repeat the shuffling")
     argument_parser.add_argument("-d", "--debug", default=False, action="store_true", help="Boolean to enable verbosity--i.e. debugging")
     argument_parser.add_argument("-s", "--show_silhouetting", default=False, action="store_true", help="Boolean to enable showing silhouetting")
     argument_parser.add_argument("--split", default=False, action="store_true", help="Boolean to enable splitting dataset")

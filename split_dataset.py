@@ -1,11 +1,39 @@
 import os
 import shutil
-
-from matplotlib import testing
-
+import random
 
 
-def split(folder: str, split=[0.9, 0.1, 0.2]):
+
+def shuffle(folder: str, batches):
+    for batch in range(batches):
+        for finger in range(1, 6):
+            new_path = folder + '/fingers_' + str(finger) + "/"
+
+            directory = os.listdir(folder + '/fingers_' + str(finger))
+            for i in range(len(directory)):
+                # we will swap files names x times, where x is the size of the listed directory
+                file1 = new_path + random.choice(directory)
+                file2 = new_path + random.choice(directory)
+                while (file1 == file2):
+                    file2 = new_path + random.choice(directory)
+                file1_ext = file1[file1.rindex("."):]
+                file2_ext = file2[file2.rindex("."):]
+                # rename file 1 to temp
+                # rename file 2 to file 1
+                # rename file 1 to file 2
+                file1_temp = file1[:file1.rindex("/")] + "/temp" + file1_ext
+                os.rename(file1, file1_temp)
+                os.rename(file2, file1[:file1.rindex(".")] + file2_ext)
+                os.rename(file1_temp, file2[:file2.rindex(".")] + file1_ext)
+
+
+
+def split(folder: str, args, split=[0.9, 0.1, 0.2]):
+    # first we shuffle the entire dataset to avoid 
+    shuffle(folder, args.shuffle_batches)
+    if args.just_shuffle or not args.split:
+        return
+
     # split is defined to be [training, testing, validation]
     assert split[0] + split[1] == 1, "split percentages must add up to 100%!"
     assert all([x > 0 for x in split]), "split percentage must not be less than 0!"

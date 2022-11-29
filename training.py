@@ -94,6 +94,7 @@ model = tf.keras.models.Sequential([
     # tf.keras.layers.Dense(units=64, activation='relu'),
     # tf.keras.layers.Dense(units=32, activation='relu'),
     # tf.keras.layers.Dense(units=16, activation='relu'),
+    # tf.keras.layers.Dense(units=8, activation='relu'),
     tf.keras.layers.Dense(units=5, activation='softmax')
 ])
 # model = tf.keras.models.Sequential([
@@ -115,7 +116,7 @@ model.compile(
 )
 model.fit(
     ds_train,
-    epochs=12,
+    epochs=100,
     validation_data=ds_test,
 )
 

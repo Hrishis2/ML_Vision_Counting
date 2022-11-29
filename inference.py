@@ -35,9 +35,11 @@ if __name__ == "__main__":
 
         # print(img.shape)
         predictions = model.predict(img).tolist()[0]
+        predictions = [100*x for x in predictions]
+        print(predictions)
         max_confidence = max(predictions)
         prediction = predictions.index(max_confidence)
-        print("Prediction: " + str(prediction) + " fingers -> " + str(max_confidence*100) + "%" + " confidence\n")
+        print("Prediction: " + str(prediction) + " fingers -> " + str(max_confidence) + "%" + " confidence\n")
         # print(max)
         
         if cv2.waitKey(1) & 0xFF == ord('q'):
