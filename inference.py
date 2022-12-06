@@ -1,27 +1,46 @@
-from time import sleep
+from configparser import Interpolation
 import tensorflow as tf
 import cv2
+import util
+import argparse
 import numpy as np
 
 
 if __name__ == "__main__":
+
+    argument_parser = argparse.ArgumentParser("Inference for NN")
+    argument_parser.add_argument("-d", "--debug", default=False, action="store_true", help="Boolean to enable verbosity--i.e. debugging")
+    argument_parser.add_argument("-s", "--show_silhouetting", default=False, action="store_true", help="Boolean to enable showing silhouetting")
+    args = argument_parser.parse_args()
+
+
+
     # initialize the camera
     cam = cv2.VideoCapture(0)   # 0 -> index of camera
+
+    model = tf.keras.models.load_model('saved_model/model')
     
     while True:
-        s, img = cam.read()
-        # cv2.imshow('frame', img)
+        success, img = cam.read()
+        if not success:
+          raise Exception("CV2 failed to read the video.")
 
-        grayImage = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        
-        cv2.imshow('frame', grayImage)
+        image = util.hand_silhouetting(img, args)
+        img = tf.image.rgb_to_grayscale(img)
+        img = tf.image.resize(img, [256,256])
+        img = tf.cast(img, tf.float32) / 255.
+        img = np.expand_dims(img, axis=0)
 
-        # for row in range(len(img)):
-        #     for col in range(len(img)):
-        #         pixel = img[row][col]
-        #         sum_p = sum(pixel)
-        #         avg_p = pixel[0]*pixel[1]*pixel[2]*(1/3)
-        #         img[row][col] = [avg_p/np.linalg.norm(sum_p)]
+        cv2.imshow('frame', image)
+
+        # print(img.shape)
+        predictions = model.predict(img).tolist()[0]
+        predictions = [100*x for x in predictions]
+        print(predictions)
+        max_confidence = max(predictions)
+        prediction = predictions.index(max_confidence)
+        print("Prediction: " + str(prediction) + " fingers -> " + str(max_confidence) + "%" + " confidence\n")
+        # print(max)
         
         if cv2.waitKey(1) & 0xFF == ord('q'):
           break
